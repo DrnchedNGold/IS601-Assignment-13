@@ -198,19 +198,37 @@ docker run -it --rm <image-name>
 
 # 🚀 6. Running the Project
 
-- **Without Docker**:
+## Front-End
 
-```bash
-python main.py
-```
+- Open `templates/register.html` and `templates/login.html` in your browser to access registration and login pages.
+- Static assets are in `static/css/` and `static/js/`.
 
-(or update this if the main script is different.)
+## Playwright E2E Tests
 
-- **With Docker**:
+- Install Playwright dependencies:
+  ```bash
+  pip install playwright
+  playwright install
+  ```
+- Run E2E tests:
+  ```bash
+  pytest tests/e2e/
+  ```
 
-```bash
-docker run -it --rm <image-name>
-```
+## Docker
+
+- **Build Docker Image**:
+  ```bash
+  docker build -t varuns03/is601-assignment-13 .
+  ```
+- **Run Docker Container**:
+  ```bash
+  docker run -it --rm varuns03/is601-assignment-13
+  ```
+
+## Docker Hub Repository
+
+- Images are pushed to: [https://hub.docker.com/r/varuns03/is601-assignment-13](https://hub.docker.com/r/varuns03/is601-assignment-13)
 
 ---
 
