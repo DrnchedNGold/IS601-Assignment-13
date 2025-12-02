@@ -94,35 +94,43 @@ async def decode_token(
             else settings.JWT_REFRESH_SECRET_KEY
         )
         
+        # Always decode with verify_exp=False to allow custom error handling
         payload = jwt.decode(
             token,
             secret,
             algorithms=[settings.ALGORITHM],
-            options={"verify_exp": verify_exp}
+            options={"verify_exp": False}
         )
         
+        # Check token type first
         if payload.get("type") != token_type.value:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token type",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            
+        
+        # Check revocation
         if await is_blacklisted(payload["jti"]):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token has been revoked",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            
+        
+        # Manual expiration check
+        if verify_exp:
+            exp = payload.get("exp")
+            now = datetime.now(timezone.utc).timestamp()
+            if exp is not None and now > float(exp):
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token has expired",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+        
         return payload
         
-    except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token has expired",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

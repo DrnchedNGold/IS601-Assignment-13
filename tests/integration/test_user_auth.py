@@ -195,3 +195,10 @@ def test_missing_password_registration(db_session):
     # Adjust the expected error message
     with pytest.raises(ValueError, match="Password must be at least 6 characters long"):
         User.register(db_session, test_data)
+
+def test_jwt_password_hash_and_verify():
+    from app.auth import jwt
+    password = "TestPass123!"
+    hashed = jwt.get_password_hash(password)
+    assert jwt.verify_password(password, hashed)
+    assert not jwt.verify_password("WrongPass", hashed)
