@@ -117,6 +117,8 @@ class User(Base):
         password = user_data.get("password")
         if not password or len(password) < 6:
             raise ValueError("Password must be at least 6 characters long")
+        if len(password) > 72:
+            raise ValueError("Password cannot be longer than 72 characters (bcrypt limitation). Please use a shorter password.")
         
         # Check for duplicate email or username
         existing_user = db.query(cls).filter(

@@ -40,12 +40,15 @@ TestingSessionLocal = get_sessionmaker(engine=test_engine)
 # ======================================================================================
 def create_fake_user() -> Dict[str, str]:
     """Generate a dictionary of fake user data for testing."""
+    import string
+    import random
+    ascii_password = ''.join(random.choices(string.ascii_letters + string.digits + "!@#$%^&*", k=12))
     return {
         "first_name": fake.first_name(),
         "last_name": fake.last_name(),
         "email": fake.unique.email(),
         "username": fake.unique.user_name(),
-        "password": fake.password(length=12)
+        "password": ascii_password
     }
 
 @contextmanager

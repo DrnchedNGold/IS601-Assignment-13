@@ -9,6 +9,7 @@ from app.models.user import User
 def test_password_hashing(db_session, fake_user_data):
     """Test password hashing and verification functionality"""
     original_password = "TestPass123"  # Use known password for test
+    print("FAKE USER PASSWORD:", fake_user_data['password'], "LENGTH:", len(fake_user_data['password'].encode("utf-8")))
     hashed = User.hash_password(original_password)
     
     user = User(

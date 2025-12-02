@@ -36,15 +36,15 @@ class UserCreate(UserBase):
     """Schema for user creation with password validation"""
     password: str = Field(
         min_length=8,
-        max_length=128,
+        max_length=72,
         example="SecurePass123!",
-        description="User's password (8-128 characters)"
+        description="User's password (8-72 bytes, bcrypt limitation)"
     )
     confirm_password: str = Field(
         min_length=8,
-        max_length=128,
+        max_length=72,
         example="SecurePass123!",
-        description="Password confirmation"
+        description="Password confirmation (8-72 bytes, bcrypt limitation)"
     )
 
     @model_validator(mode='after')
